@@ -8,14 +8,28 @@
 
 LAYOUT_WITH_LEGEND()
 
-Person(pbc, "Personal Banking Customer", "A customer of the bank, with personal bank accounts.")
-System(ibs, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
-System_Ext(es, "E-mail system", "The internal Microsoft Exchange e-mail system.")
-System_Ext(mbs, "Mainframe Banking System", "Stores all of the core banking information about customers, accounts, transactions, etc.")
+Person(participant, "Участник", "Посещает доклады, оставляет обратную связь")
+Person(reporter, "Докладчик", "Представляет доклады участникам конференции")
+Person(export, "Эксперт", "Ревьюит доклады конференции")
+Person(organizer, "Организатор", "Ответсвенный за управление всеми аспектами конференции")
+Person(recruter, "Рекрутер", "Работает информацией о кандидатах")
 
-Rel(pbc, ibs, "Uses")
-Rel(es, pbc, "Sends e-mails to")
-Rel(ibs, es, "Sends e-mails", "SMTP")
-Rel(ibs, mbs, "Uses")
+System(confsys, "МТС HelloConf", "Система реализующая управление веб-конференцией МТС HelloConf")
+
+System_Ext(emailsys, "Система рассылки e-mail", "Отправляет/получает email-ы, доставляет их до пользователей")
+System_Ext(vspsys, "Система видео-стриминга", "Управляет стримингом видео, его записью и хранением")
+
+Rel(participant, confsys, "Регистрируется, просматривает расписание")
+Rel(reporter, confsys,  "Регистрируется, предоставляет доклад")
+Rel(export, confsys,  "Рецензирует доклад")
+Rel(organizer, confsys,  "Управляет расписанием конференции, рассылками")
+Rel(recruter, confsys,  "Получает отчеты об участниках")
+
+Rel(confsys, emailsys, "Отправляет email-ы", "smtp")
+Rel(confsys, vspsys, "Управляет стримингом", "tcp")
+Rel(participant, vspsys, "Подключается к вещанию", "tcp")
+Rel(reporter, vspsys, "Подключается к вещанию", "tcp")
+Rel(emailsys, participant, "Доставляет email", "smtp")
+Rel(emailsys, reporter, "Доставляет email", "smtp")
 @enduml
 ```
