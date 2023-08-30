@@ -8,89 +8,99 @@
 ```plantuml
 @startuml
 ' Логическая модель данных в варианте UML Class Diagram (альтернатива ER-диаграмме).
-namespace ShoppingCart {
+namespace App {
+    Registration "1" o-- "0..1" User: ref
+    Registration <-- RegistrationStatus: uses
+    User "1" <-- "1" Role: acts
+    User "1" o-- "0..*" Report: has
+    Broadcast "1" o-- "1" Report: ref
+    Broadcast "1" o-- "1" Room: ref
+    TimeTable "1" o-- "0..*" Broadcast: ref
+    Room "1" o-- "1" Chat: ref
+    Room "1" o-- "0..*" User: ref
+    Report "1" <-- "1" ReviewStatus: uses
+    Chat "1" o-- "0..*" User: ref
+    Notification "1" o-- "0..*" User: ref
+    Broadcast <-- BroadcastStatus
 
- class ShoppingCart
- {
-  id : string
-  createDate : datetime
-  updateDate : datetime
-  customer : Customer
-  price : ShoppingCartPrice
-  cartItems : CartItem[]
- }
+    class TimeTable {
+        Map<DateTime, Broadcast> timetable;
+    }
 
- class ShoppingCartPrice
- {
-  type : CartItemPrice
- }
- class CartItemPrice
- {
-  type : CartItemPriceType
- }
+    class Broadcast {
+        DateTime startTime;
+        DateTime endTime;
+        BroadcastStatus status;
+    }
 
- enum CartPriceType
- {
-  total
-  grandTotal
-  offeringDiscount
-  couponsDiscount
- }
+    enum BroadcastStatus {
+        ON
+        OFF
+    }
 
- class CartItem
- {
-  id : string
-  quantity : int
-  offering : Offering
-  relationship : CartItemRelationShip[]
-  price : CartItemPrice[]
-  status : CartItemStatus
- }
+    class Room {
+        String name;
+        String url;
+    }
 
-  class Customer
- {
-  id : string
- }
- 
- class Offering
- {
-  id : string
-  isQuantifiable : boolean
-  actionType : OfferingActionType
-  validFor : ValidFor
- }
-  
- class ProductSpecificationRef
- {
-  id : string
- }
- 
- ShoppingCart *-- "1..*" ShoppingCartPrice
- ShoppingCartPrice -- CartPriceType
- ShoppingCart *-- "*" CartItem
- CartItem *-- "*" CartItemPrice
- CartItemPrice -- CartPriceType
- CartItem *-- "1" Offering
- Offering *-- "1" ProductSpecificationRef
- Offering *-- "0..1" ProductConfiguration
- ShoppingCart *-- "1" Customer
-}
+    class Chat {
+        Long id;
+    }
 
-namespace Ordering {
- ProductOrder *-- OrderItem
- OrderItem *-- Product
- Product *-- ProductSpecificationRef
- ProductOrder *-- Party
-}
+    class Notification {
+        Long id;
+        String templateName;
+        Map<String, Object> templateParams;
+        String theme;
+        String senderEmail;
+        Set<String> receiverEmails;
+    }
 
-namespace ProductCatalog {
- ShoppingCart.ProductSpecificationRef ..> ProductSpecification : ref
- Ordering.ProductSpecificationRef ..> ProductSpecification : ref
-}
+    class Registration {
+        Long id;
+        String name;
+        String surnmame;
+        String companyName;
+        String jobTitle;
+        String email;
+        RegistrationStatus status;
+    }
 
-namespace CX {
- ShoppingCart.Customer ..> Customer : ref
- Ordering.Party ..> Customer : ref
+    class User {
+        Long id;
+        String name;
+        String surname;
+        String email;
+        Role role;
+    }
+
+    class Report {
+        Long id;
+        String name;
+        String annotation;
+        ReviewStatus reviewStatus;
+    }
+
+    enum Role {
+        PARTICIPANT
+        REPORTER
+        EXPERT
+        RECRUTER
+        ORGANIZER
+    }
+
+    enum RegistrationStatus {
+        PENDING
+        REJECTED
+        ACCEPTED
+    }
+
+    enum ReviewStatus {
+        PENDING
+        REJECTED
+        ACCEPTED
+    }
+
 }
 @enduml
 ```
