@@ -29,7 +29,9 @@ Rel(confsys, emailsys, "Отправляет email-ы", "smtp")
 Rel(confsys, vspsys, "Управляет стримингом", "tcp")
 Rel(participant, vspsys, "Подключается к вещанию", "tcp")
 Rel(reporter, vspsys, "Подключается к вещанию", "tcp")
+Rel(organizer, vspsys, "Подключается к вещанию", "tcp")
 Rel(emailsys, participant, "Доставляет email", "smtp")
 Rel(emailsys, reporter, "Доставляет email", "smtp")
+
 @enduml
 ```
